@@ -1,36 +1,46 @@
 // Initialize Parse app
-
+Parse.initialize("xgLW2piWkiou72R8UyQD1Jdm0gFb5P595FUdcBMR", "fKx87J0SY19lRycVuAJKICjfdbR2kmiFYVmgsvwe");
 
 // Create a new sub-class of the Parse.Object, with name "Music"
-
+var Music = Parse.Object.extend('Music');
 
 // Create a new instance of your Music class 
+var tunes = new Music();
 
+// // Set a property 'band' equal to a band name
+// tunes.set('band', 'Earth Wind and Fire');
 
-// Set a property 'band' equal to a band name
-
-
-// Set a property 'website' equal to the band's website
-
+// // Set a property 'website' equal to the band's website
+// tunes.set('website', 'link here');
     
-// Set a property 'song' equal to a song
+// // Set a property 'song' equal to a song
+// tunes.set('song', 'September');
 
-
-// Save your instance of your song -- and go see it on parse.com!
-
+// // Save your instance of your song -- and go see it on parse.com!
+// tunes.save();
 
 // Click event when form is submitted
 $('form').submit(function() {
 
 	// Create a new instance of your Music class 
+	var moreTunes = new Music();
 
-
-	// For each input element, set a property of your new instance equal to the input's value
-
+	$(this).find('input').each(function() {
+		moreTunes.set($(this).attr('id'), $(this).val())
+		$(this).val('')
+	})
+	// // For each input element, set a property of your new instance equal to the input's value
+	// moreTunes.set('band', $('#bandname').val());
+	// moreTunes.set('website', $('#website').val());
+	// moreTunes.set('song', $('#bestsong').val());	
 
 	// After setting each property, save your new instance back to your database
-
+	moreTunes.save();
 	
+	// $('#bandname').val(''));
+	// $('#website').val(''));
+	// $('#bestsong').val(''));
+
 	return false
 })
 
