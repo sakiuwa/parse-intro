@@ -23,24 +23,27 @@ var tunes = new Music();
 $('form').submit(function() {
 
 	// Create a new instance of your Music class 
-	var moreTunes = new Music();
+	var tunes = new Music();
 
 	$(this).find('input').each(function() {
-		moreTunes.set($(this).attr('id'), $(this).val())
+		tunes.set($(this).attr('id'), $(this).val())
 		$(this).val('')
 	})
 	// // For each input element, set a property of your new instance equal to the input's value
-	// moreTunes.set('band', $('#bandname').val());
-	// moreTunes.set('website', $('#website').val());
-	// moreTunes.set('song', $('#bestsong').val());	
+	// tunes.set('band', $('#bandname').val());
+	// tunes.set('website', $('#website').val());
+	// tunes.set('song', $('#bestsong').val());	
 
 	// After setting each property, save your new instance back to your database
-	moreTunes.save();
+	tunes.save(null, {
+        success: getData
+    });
 	
 	// $('#bandname').val(''));
 	// $('#website').val(''));
 	// $('#bestsong').val(''));
 
+    //page does not reload
 	return false
 })
 
@@ -51,38 +54,56 @@ var getData = function() {
 	
 
 	// Set up a new query for our Music class
-
+    var query = new Parse.Query(Music);
 
 	// Set a parameter for your query -- where the website property isn't missing
-
+    query.notEqualTo('website', '');
 
 	/* Execute the query using ".find".  When successful:
 	    - Pass the returned data into your buildList function
 	*/
+    query.find({
+        success:function(results) {  //can call 'results' something else as well
+            buildList(results);
+        }
+        //success:buildList  //alternative line of code
+    })
 }
 
 // A function to build your list
 var buildList = function(data) {
 	// Empty out your unordered list
-	
+	$('#list').empty();
 	// Loop through your data, and pass each element to the addItem function
-
+    for (i in data) {
+        addItem(data[i]);
+    }
+    /* data.forEach(functions(d) {
+        addItem(d);
+    }); */
 }
 
 
 // This function takes in an item, adds it to the screen
 var addItem = function(item) {
 	// Get parameters (website, band, song) from the data item passed to the function
+    var band = item.get('band');
+    var website = item.get('website');
+    var song = item.get('song');
 
-	
 	// Append li that includes text from the data item
+    var li = $('<li>' + band + ', ' + song + ', ' + website + '</li>');
+    var button = $("<button class='btn-danger btn-xs'><span class='glyphicon'>Remove</span></button>'");
+    button.click(function() {
+        item.destroy({
+            success:getData
+        });
+    })
+    li.append(button);
+    $('#list').append(li);
 
-
-	
 	// Time pending, create a button that removes the data item on click
-	
 }
 
 // Call your getData function when the page loads
-
-
+getData();
